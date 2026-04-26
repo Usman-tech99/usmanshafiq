@@ -1130,28 +1130,28 @@ footer {
 
     <!-- Contact Form -->
     <div class="reveal">
-      <form onsubmit="sendMsg(event)">
+      <form id="contact-form" onsubmit="sendMsg(event)">
         <div class="form-row">
           <div class="form-field">
             <label class="form-label">Name</label>
-            <input class="form-input" type="text" placeholder="Your full name" required />
+            <input class="form-input" type="text" name="from_name" placeholder="Your full name" required />
           </div>
           <div class="form-field">
             <label class="form-label">Email</label>
-            <input class="form-input" type="email" placeholder="your@email.com" required />
+            <input class="form-input" type="email" name="from_email" placeholder="your@email.com" required />
           </div>
         </div>
         <div class="form-field">
           <label class="form-label">Subject</label>
-          <input class="form-input" type="text" placeholder="Project inquiry, collaboration…" />
+          <input class="form-input" type="text" name="subject" placeholder="Project inquiry, collaboration…" />
         </div>
         <div class="form-field">
           <label class="form-label">Budget (optional)</label>
-          <input class="form-input" type="text" placeholder="e.g. $300 – $600" />
+          <input class="form-input" type="text" name="budget" placeholder="e.g. $300 – $600" />
         </div>
         <div class="form-field">
           <label class="form-label">Message</label>
-          <textarea class="form-input" rows="5" placeholder="Tell me about your project, goals, and timeline…" required></textarea>
+          <textarea class="form-input" name="message" rows="5" placeholder="Tell me about your project, goals, and timeline…" required></textarea>
         </div>
         <button class="form-submit" type="submit" id="fsub">Send Message →</button>
       </form>
@@ -1167,6 +1167,14 @@ footer {
   <div class="footer-copy">&copy; 2026 &middot; All rights reserved</div>
   <div class="footer-loc"><i class="fa-solid fa-location-dot" style="color:var(--gold);"></i> Shujabad, Pakistan</div>
 </footer>
+
+<!-- EmailJS SDK -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init("5K1Y3RG6uZYg_5Th3");
+   })();
+</script>
 
 <script>
 /* ── Scroll reveal ── */
@@ -1188,17 +1196,29 @@ function sendMsg(e) {
   btn.textContent = 'Sending…';
   btn.style.opacity = '.6';
   btn.disabled = true;
-  setTimeout(() => {
-    btn.textContent = '✓ Message Sent!';
-    btn.style.opacity = '1';
-    btn.style.background = '#22c55e';
-    setTimeout(() => {
-      btn.textContent = 'Send Message →';
-      btn.style.background = 'var(--gold)';
-      btn.disabled = false;
-      e.target.reset();
-    }, 3000);
-  }, 1200);
+
+  emailjs.sendForm('service_p4r1b7e', 'template_1clyx7h', e.target)
+    .then(function() {
+      btn.textContent = '✓ Message Sent!';
+      btn.style.opacity = '1';
+      btn.style.background = '#22c55e';
+      setTimeout(() => {
+        btn.textContent = 'Send Message →';
+        btn.style.background = 'var(--gold)';
+        btn.disabled = false;
+        e.target.reset();
+      }, 3000);
+    }, function(error) {
+      btn.textContent = '❌ Failed to send';
+      btn.style.opacity = '1';
+      btn.style.background = '#ef4444';
+      console.log('FAILED...', error);
+      setTimeout(() => {
+        btn.textContent = 'Send Message →';
+        btn.style.background = 'var(--gold)';
+        btn.disabled = false;
+      }, 3000);
+    });
 }
 </script>
 </body>
